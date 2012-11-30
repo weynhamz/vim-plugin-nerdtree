@@ -2488,6 +2488,13 @@ function! s:Path.getSortOrderIndex()
     return s:NERDTreeSortStarIndex
 endfunction
 
+
+"FUNCTION: Path.isUnixHiddenFile() {{{3
+"check for unix hidden files
+function! s:Path.isUnixHiddenFile()
+    return self.getLastPathComponent(0) =~# '^\.'
+endfunction
+
 "FUNCTION: Path.ignore() {{{3
 "returns true if this path should be ignored
 function! s:Path.ignore()
@@ -2501,7 +2508,7 @@ function! s:Path.ignore()
     endif
 
     "dont show hidden files unless instructed to
-    if b:NERDTreeShowHidden ==# 0 && self.getLastPathComponent(0) =~# '^\.'
+    if b:NERDTreeShowHidden ==# 0 && self.isUnixHiddenFile()
         return 1
     endif
 
@@ -3003,7 +3010,7 @@ function! s:findAndRevealPath()
         return
     endtry
 
-    if p.getLastPathComponent(0) =~# '^\.'
+    if p.isUnixHiddenFile()
         let showhidden=g:NERDTreeShowHidden
         let g:NERDTreeShowHidden = 1
     endif
@@ -3039,7 +3046,7 @@ function! s:findAndRevealPath()
     call s:putCursorInTreeWin()
     call b:NERDTreeRoot.reveal(p)
 
-    if p.getLastPathComponent(0) =~# '^\.'
+    if p.isUnixHiddenFile()
         let g:NERDTreeShowHidden = showhidden
     endif
 endfunction
